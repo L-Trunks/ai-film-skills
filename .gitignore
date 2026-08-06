@@ -13,6 +13,9 @@ __pycache__/
 *.mp3
 !docs/**/*.png
 !docs/**/*.jpg
+# README 里的预览片，已压到 web 档，全部 ≤4 MB
+# 注意：gitignore 不支持行尾注释，注释必须单独占一行
+!docs/**/*.mp4
 
 # 编辑器 / 系统
 .vscode/

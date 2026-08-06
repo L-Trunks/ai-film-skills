@@ -10,6 +10,38 @@
 
 ---
 
+## 先看片
+
+三部，全部产自一张 **RTX 4070 Ti（12 GB）**，生成环节无云端 API。
+
+### 《男友视角 vlog》— long-shot，2 段 / 4 镜 / 10.3 秒
+
+<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/vlog.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/vlog-grid.jpg" controls muted width="300"></video>
+
+**声音是模型直接生成的**，含中文台词与口型同步。每段自带一次段内硬切。
+关系感全靠「距离 + 朝向镜头的物理动作」——「一步一步凑近镜头直到脸占满画面」做得到，
+「头靠在镜头的肩上」做不到。
+
+### 《九尾》— long-shot 链式长片，58 段接成一部
+
+<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/jiuwei.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/jiuwei-grid.jpg" controls muted width="640"></video>
+
+尾帧接首帧，同一角色贯穿。旁白与字幕后期配，BGM 一条贯穿。
+生成量 **57 段次 / 5 小时 GPU 时间**，其中 17 段废掉重来。
+
+### 《山海》— short-shot 预告片
+
+<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/shanhai.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/shanhai-grid.jpg" controls muted width="640"></video>
+
+**全片没有一只异兽出现全身**——只拍痕迹。这不是风格选择，是被模型逼出来的：
+山海经异兽没有真实照片作底，正面拍必假，30 镜砸 6 镜。
+
+> 播放器不显示的话，直接下载：
+> [vlog](./docs/assets/vlog.mp4) · [九尾](./docs/assets/jiuwei.mp4) · [山海](./docs/assets/shanhai.mp4)
+> 更多分镜与说明见 [成片画廊](./docs/gallery.md)。
+
+---
+
 ## 这个仓库解决什么
 
 用 AI 做短片，卡住人的从来不是「怎么调 API」，而是这三件事：
@@ -91,7 +123,7 @@ use_count: 4
 - **戏剧强度越高越假** — 火山喷发、冰川崩塌是 AI 过拟合区，训练集全是渲染图，一出必带 AI 味。普通瞬间才真。
 - **人脸一致性阈值是 0.28，不是 0.5** — AI 生成的同一角色，嵌入余弦相似度天然比真人照片低。照搬真人经验值会把全部合格图判成不合格。
 - **提示词里的文字会被画进画面** — 不只是引号里的台词。同一段连撞三次，依次画出了旁白原句、配角描述里的「二十五六岁」、动作描述里的「行了个礼」。**数字风险最高**，而末尾写「画面无文字无水印」完全无效。
-- **通用超分会拧坏小人脸** — 人脸短边 < 110px 时，ESRGAN 会把五官熔成一团、脸上长出十字伪纹理；> 150px 则无害。修法是按段分治，不是换更强的模型。
+- **通用超分会拧坏小人脸** — 人脸短边 < 110px 时，ESRGAN 会把五官熔成一团、脸上长出十字伪纹理；> 150px 则无害。首选修法是**重抽那一段**（改景别把脸做大）；按段分治只是来不及重抽时的兜底 —— 它做的是「不去编造」，不是「修好」。
 - **人脸修复对奇幻角色是负资产** — CodeFormer 把「浅琥珀金瞳」改成灰蓝色，`fidelity=0.9` 都拦不住。它对「正常人脸」的先验太强。
 - **concat 之后必须重建时间戳** — 不加 `setpts=N/FPS/TB`，编码器会静默丢帧（实测 6062 → 6013），而且丢帧累积，音画越到后面偏得越多。
 
