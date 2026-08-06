@@ -217,16 +217,16 @@ cp -r skills/* ~/.claude/skills/
 
 Then tell Claude Code "make a short film" or "batch-run some atmospheric videos."
 
-> **Using Codex or another agent?**
-> They don't have Claude Code's skill auto-triggering, but these documents are plain Markdown
-> methodology — clone the repo, point your agent at `skills/local-ai-film/SKILL.md`, and it will
-> still walk you through the whole process. You just have to name the file each time.
-
 **That's it — the skill is fully usable at this point.** It walks you through the opening
 ritual, blocks homogenization via the fingerprint, picks the route that matches your model,
 writes the shot list, and steers you around the several dozen pitfalls in `knowledge/`.
 None of that **needs scripts, models or a GPU** — it works just as well if you generate
 through a cloud API.
+
+> **Using Codex or another agent?**
+> They don't have Claude Code's skill auto-triggering, but these documents are plain Markdown
+> methodology — clone the repo, point your agent at `skills/local-ai-film/SKILL.md`, and it will
+> still walk you through the whole process. You just have to name the file each time.
 
 ### Step 2 (optional) — calibrate your own profile
 
