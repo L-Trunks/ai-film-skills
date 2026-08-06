@@ -41,8 +41,14 @@ align_to: n/a               # API 收宽高比，不收像素尺寸
 prompt_char_limit: 7000
 
 # ── 成本（取代本地档的性能项）──
-cost_per_output_sec_usd: 0.130
-min_charge_usd: 0.52        # 4 秒起步
+# 2026-08 官方按量计价（platform.minimaxi.com/docs/guides/pricing-paygo）
+# 之前这里写的是转述来的 0.130 美元/秒，比官方实际价高了近一倍 —— 转述的数就是这么不可靠。
+cost_per_output_sec_cny: 0.50    # 768P
+cost_2k_per_sec_cny: 0.80        # 2K
+cost_regen_768_to_2k_cny: 0.30   # MiniMax-H3-Regeneration 超分档
+cost_input_image_cny: 0.20       # 前 5 张免费，超出部分每张
+cost_input_audio_cny: 0           # 免费
+resource_package: 不支持          # 官方注明「视频资源包暂不支持 MiniMax H3」
 sec_per_shot: null          # 待测：排队 + 生成的实际墙钟时间
 vram_peak_gb: n/a
 restart_each_shot: n/a
