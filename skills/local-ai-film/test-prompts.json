@@ -1,0 +1,71 @@
+{
+  "skill": "local-ai-film",
+  "version": "0.2.0",
+  "type": "实操型",
+  "verified": "本机实测",
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "帮我做一部 30 秒的氛围短片，风格你定",
+      "expected_behavior": "应激活 local-ai-film，并从第 1 步 profile 开始走开片流程，不直接写分镜",
+      "notes": "最典型入口。关键考察点：会不会跳过前三步闸门"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我想用 LTX 跑一批视频，题材是深夜的城市",
+      "expected_behavior": "应激活 local-ai-film；因 signature 层已有「夜班」记录，应提示可能撞车",
+      "notes": "考察指纹库是否真的被读取"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我换了 Wan2.2 出视频，之前那套 2.04 秒还能用吗",
+      "expected_behavior": "应激活 local-ai-film，指出 2.04 秒是 ltx-2.3-q4-12g 的 profile 属性，需走 calibration.md 重新标定",
+      "notes": "考察 profile 机制是否被正确理解为「非普适」"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "再来一部 SCP 风格的预告片",
+      "expected_behavior": "应激活 local-ai-film，并因 structure=trailer-8seg 已用 4 次、signature 多项重复而要求换结构或换手法",
+      "notes": "核心考察点：这正是本次重构要解决的同质化场景"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这条片子的 BGM 选哪首好，我有三个候选",
+      "expected_behavior": "不应触发完整开片流程；可引用 knowledge/bgm-spectral.md 的三档频谱参数直接回答",
+      "notes": "诱饵：单点问题不该拉起整套流程"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我这期科普视频的口播稿写多少字合适",
+      "expected_behavior": "应转 speech-cadence-baseline，不触发 local-ai-film",
+      "notes": "跨域诱饵：有旁白的科普片明确在不适用范围内"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "我拍了一堆素材，帮我剪成一条 vlog",
+      "expected_behavior": "不应触发；已有实拍素材的剪辑在不适用范围内",
+      "notes": "诱饵：区分「生成」与「剪辑已有素材」"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "做一部 20 秒的片，要全片凝滞的那种慢节奏",
+      "expected_behavior": "应指出 tempo=全片凝滞 需要 max_shot_sec ≥ 5，当前 profile 是 2.04 做不到，给出替代方案或建议换 profile",
+      "notes": "考察变量表的前置条件是否与 profile 真正联动，而不只是列在表里"
+    },
+    {
+      "id": "edge-02",
+      "type": "edge_case",
+      "prompt": "分镜里有个镜头是『空椅子上留着坐过的凹陷』",
+      "expected_behavior": "应命中 prompt-craft 三-C 缺席表达，指出模型会把人画出来，给出逐项否定句写法",
+      "notes": "考察踩坑库能否在写分镜阶段被主动调用，而非事后补救"
+    }
+  ]
+}

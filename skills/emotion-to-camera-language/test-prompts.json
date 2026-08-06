@@ -1,0 +1,66 @@
+{
+  "skill": "emotion-to-camera-language",
+  "version": "0.1.0",
+  "source_book": "多源蒸馏《本地链路可生产的无对白情绪短片分镜》",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我想要那种很治愈的感觉，但不知道提示词具体该怎么写",
+      "expected_behavior": "应激活 emotion-to-camera-language，把'治愈'翻译成光位/景深/机位/人物状态四件套",
+      "notes": "正面场景：只有情绪词，需要翻译"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这批图生出来都感觉很平，像证件照，说不出哪里不对",
+      "expected_behavior": "应激活 emotion-to-camera-language，用四件套自检（是否缺逆光/浅景深/人物动作/主运镜）定位问题",
+      "notes": "正面场景：结果不满意但说不清原因"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "帮我把'古墓惊悚'这个氛围落成几个具体的镜头描述",
+      "expected_behavior": "应激活 emotion-to-camera-language，给出惊悚场景下光位（低位光/侧硬光+大面积暗部）等四件套取值",
+      "notes": "正面场景：情绪/品类落地为具体镜头"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "分镜表的'画面提示词'这一栏我卡住了，写不出来",
+      "expected_behavior": "应激活 emotion-to-camera-language，引导按机位→光位→景深→人物状态顺序组装",
+      "notes": "正面场景：写分镜表卡在提示词描述"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这批图筛出来了，有几张人物形象崩了，是继续重抽还是先弃用？",
+      "expected_behavior": "不应激活 emotion-to-camera-language，应激活 shot-breakdown——这是生成之后的筛选/判停问题，不是生成前怎么描述",
+      "notes": "跨 skill 混淆诱饵（硬性要求）：ECL（生成前描述）vs shot-breakdown（生成后筛选）易混对"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "这镜我想要赛博朋克风格，该怎么处理？",
+      "expected_behavior": "不应激活，用户要的是风格而非情绪，四件套是叙事影像情绪的语言，风格词是画风模型层面的问题",
+      "notes": "诱饵：风格 vs 情绪，B 段明确排除"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "主角的固定形象图还没跑出来，能先写这一镜的提示词吗？",
+      "expected_behavior": "不应激活，应先转 lock-character-reference——四件套的'人物状态'依赖角色形象已锁定这个前提",
+      "notes": "诱饵：角色未锁定场景，本 skill depends-on lock-character-reference"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我已经写好一句带机位光位的具体提示词了，就是不确定'电影感'够不够，要不要按四件套再检查一遍",
+      "expected_behavior": "合理判断：提示词已经具体化，不需要重新翻译，可以用四件套的'自检问句'和'删除检查'做一次校验，但不算典型触发场景（重点是校验而非从头翻译）",
+      "notes": "边界：已有具体提示词时，本 skill 的适用程度降为'自检工具'而非'从头翻译'"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "8 条：4 should_trigger + 3 should_not_trigger（含跨 skill 混淆诱饵 should-not-trigger-01：生成后筛选应转 shot-breakdown）+ 1 edge_case。"
+}

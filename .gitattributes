@@ -1,0 +1,6 @@
+# 仓库内一律 LF。Windows 上开发也不要把 CRLF 提交进来 ——
+# 这些 .md 会被 shell 脚本按行读，带 \r 会让路径和判断全部错位。
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.mp4 binary

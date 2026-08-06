@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# 运行时产物 —— 这些是我这台机器跑出来的，不是仓库内容
+*.log
+*.mp4
+*.png
+*.jpg
+*.wav
+*.mp3
+!docs/**/*.png
+!docs/**/*.jpg
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本地覆盖：抄一份 profile 改成自己的机器，不要提交回来
+skills/local-ai-film/profiles/local-*.md

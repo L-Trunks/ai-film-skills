@@ -1,0 +1,66 @@
+{
+  "skill": "lock-character-reference",
+  "version": "0.1.0",
+  "source_book": "多源蒸馏《本地链路可生产的无对白情绪短片分镜》",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我准备开始做分镜了，但主角的固定形象图还没跑出来，先干嘛？",
+      "expected_behavior": "应激活 lock-character-reference，指出这是第一道硬性工序，形象图不跑出来后面完全没法做",
+      "notes": "正面场景：尚未锁定形象，准备开工"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这个角色的形象图我抽了好几次，每次五官和发型都有细微差异，感觉不稳定",
+      "expected_behavior": "应激活 lock-character-reference，判定为形象图不稳定，建议换模型/收窄描述直到拿到稳定结果，判停不带着不确定形象往下做",
+      "notes": "正面场景：形象反复不稳定"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "这个短片打算安排4个角色都要跨镜头保持一致的长相，本地条件下这样行吗？",
+      "expected_behavior": "应激活 lock-character-reference，说明本地 Qwen-Image-Edit 只能同底图编辑，角色数应压到 1-2 个，建议精简",
+      "notes": "正面场景：角色数 ≥3"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "我把这只猫的形象锁定后，想让它换个机位拍，结果生成出来感觉完全不像同一只猫了",
+      "expected_behavior": "应激活 lock-character-reference，解释这是 Qwen-Image-Edit 换机位/景别必然失效的能力边界问题，不是多试几次能解决的",
+      "notes": "正面场景：换机位后形象崩坏"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "角色形象已经锁定了，这一镜我想要那种压抑惊悚的感觉，光位和机位该怎么写？",
+      "expected_behavior": "不应激活 lock-character-reference，应激活 emotion-to-camera-language——形象已锁定，问题是单镜内部机位光位怎么写",
+      "notes": "跨 skill 混淆诱饵（硬性要求）：形象已锁定场景，考验是否会误触发本 skill"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我在即梦上做角色一致性，平台自带跨镜保持能力，还需要像本地那样严格限制角色数量到1-2个吗？",
+      "expected_behavior": "不应激活（或激活后应明确说明云端平台不适用本 skill 的保守限制），因为 B 段明确排除云端画布平台场景",
+      "notes": "诱饵：云端平台原生一致性场景，边界排除项"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "帮我出几张产品展示图，白底，不同角度",
+      "expected_behavior": "不应激活，这是非叙事类出图（产品图），没有跨镜同一角色的需求",
+      "notes": "诱饵：非叙事类出图场景"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "片子里有3个角色，但其中两个背对镜头或远景，几乎看不清脸，只有主角是正脸特写，这样还需要都锁形象吗？",
+      "expected_behavior": "合理判断：核心（需要跨镜清晰一致）的角色数其实只有1个，另外两个因为不露脸/远景可以豁免严格锁定要求，应重新界定'核心角色'口径而非直接按角色总数3个判定超标",
+      "notes": "边界：角色总数≥3，但是否都需要严格锁定形象存在'露不露脸'这层过滤条件，来源未明确讨论"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "8 条：4 should_trigger + 3 should_not_trigger（含跨 skill 混淆诱饵 should-not-trigger-01：形象已锁定应转 emotion-to-camera-language）+ 1 edge_case。"
+}

@@ -1,0 +1,66 @@
+{
+  "skill": "material-driven-storyboard",
+  "version": "0.1.0",
+  "source_book": "多源蒸馏《本地链路可生产的无对白情绪短片分镜》",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我想拍一个女主雨中奔跑的镜头，结果发现驱动视频库里根本没有这个动作，怎么办？",
+      "expected_behavior": "应激活 material-driven-storyboard，给出三选一出路：换驱动视频改动作 / 改静态图+Ken Burns / 改故事去掉该镜头",
+      "notes": "正面场景：理想画面无对应素材"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这个镜头本地做不出来，是不是应该等换个更强的模型再做？",
+      "expected_behavior": "应激活 material-driven-storyboard，说明本地路线动作靠迁移不靠生成，应先盘点素材反推可行镜头，而不是等更强模型",
+      "notes": "正面场景：等模型 vs 素材反推的取舍"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "先别急着写分镜，我想先看看手头这些驱动视频和已跑通的工作流，到底能凑出什么样的故事",
+      "expected_behavior": "应激活 material-driven-storyboard，指导先盘点素材清单，再从素材反推可行的镜头语言",
+      "notes": "正面场景：主动素材盘点起手"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "照着网上那份分镜脚本对着我本地工具箱核对了一下，发现一大半镜头本地都做不出来，要怎么系统性地改？",
+      "expected_behavior": "应激活 material-driven-storyboard，逐镜核对可行性并对做不出来的镜头三选一处理",
+      "notes": "正面场景：对照已有分镜表系统性改写"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我们这片子素材倒是都不缺，就是主角形象老锁不住，换个角度拍就崩了",
+      "expected_behavior": "不应激活 material-driven-storyboard，应激活 lock-character-reference——问题在角色外观可行性而非动作/素材可行性",
+      "notes": "跨 skill 混淆诱饵（硬性要求）：MDS vs LCR 易混对，问题本质是角色形象锁定"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我在即梦上做，算力随便用，先把理想画面想清楚就行了吧？",
+      "expected_behavior": "不应激活，云端算力充足场景应走常规'理想画面先行'路线，素材反推是本地硬约束下的收敛策略",
+      "notes": "诱饵：云端平台场景，B 段明确排除"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "所有镜头素材都确认没问题了，就是不知道这一镜的机位光位提示词怎么写",
+      "expected_behavior": "不应激活，应激活 emotion-to-camera-language——素材可行性已确认，问题是单镜内部提示词怎么写",
+      "notes": "诱饵：素材已确认可行，问题转移到单镜描述层"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "驱动视频库里有个动作素材，只是分辨率和景别跟我想要的不太一样，其他都对得上，这算'没有素材'吗？",
+      "expected_behavior": "不应判定为需要三选一的'素材缺失'场景——素材本身存在，只是细节需要调整，应转 shot-breakdown 做景别/机位的二次修正，而不是本 skill 的换素材/改故事决策",
+      "notes": "边界：区分'完全没有对应素材'（本 skill）与'素材存在但细节不对'（shot-breakdown 的二次修正范围）"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "8 条：4 should_trigger + 3 should_not_trigger（含跨 skill 混淆诱饵 should-not-trigger-01：角色锁定问题应转 lock-character-reference）+ 1 edge_case。"
+}
