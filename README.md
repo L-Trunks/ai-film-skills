@@ -4,8 +4,9 @@
 
 [中文](./README.zh-CN.md) · [Gallery](./docs/gallery.md) · [Two kinds of skill](./docs/how-skills-differ.md) · [MiniMax H3 on 12 GB](./docs/minimax-h3-local-deploy.md) · [Attribution](./ATTRIBUTION.md)
 
-> **Install it and it works.** Copy into `~/.claude/skills/` and tell Claude Code "make a short film" —
-> the skill itself is methodology and knowledge; it depends on no scripts, no models, no GPU.
+> **Install it and it works.** Easiest path — paste this at Claude Code:
+> *"Install this skill for me: https://github.com/L-Trunks/ai-film-skills — clone it and run install.sh"*
+> Then say "make a short film." The skill itself is methodology and knowledge; it depends on no scripts, no models, no GPU.
 >
 > To run the reference implementations too, set three paths in `examples/scripts/config.py`
 > and run `python doctor.py` first.
@@ -183,14 +184,43 @@ families but requires reading `chain-consistency.md`.
 
 ## Usage
 
-### Step 1 — install the skills (30 seconds; you're done here)
+### Step 1 — install the skills (you're done here)
+
+**Easiest path — paste this at Claude Code:**
+
+```
+Install this skill for me: https://github.com/L-Trunks/ai-film-skills
+Clone it and run install.sh
+```
+
+It will clone the repo, run the installer, and drop all six skills into `~/.claude/skills/`.
+Re-running is safe — an existing directory of the same name is backed up before it's replaced.
+
+<details>
+<summary>Prefer to do it yourself</summary>
 
 ```bash
 git clone https://github.com/L-Trunks/ai-film-skills
-cp -r ai-film-skills/skills/* ~/.claude/skills/
+cd ai-film-skills
+bash install.sh                # Windows: powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
+Pass `--project` to install into the current project's `.claude/skills/` instead of your home directory.
+
+Or just copy them by hand:
+
+```bash
+cp -r skills/* ~/.claude/skills/
+```
+
+</details>
+
 Then tell Claude Code "make a short film" or "batch-run some atmospheric videos."
+
+> **Using Codex or another agent?**
+> They don't have Claude Code's skill auto-triggering, but these documents are plain Markdown
+> methodology — clone the repo, point your agent at `skills/local-ai-film/SKILL.md`, and it will
+> still walk you through the whole process. You just have to name the file each time.
 
 **That's it — the skill is fully usable at this point.** It walks you through the opening
 ritual, blocks homogenization via the fingerprint, picks the route that matches your model,

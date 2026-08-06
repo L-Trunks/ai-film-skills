@@ -4,8 +4,9 @@
 
 [English](./README.md) · [成片画廊](./docs/gallery.md) · [两类 skill 的区别](./docs/how-skills-differ.md) · [12 GB 跑 MiniMax H3](./docs/minimax-h3-local-deploy.md) · [出处](./ATTRIBUTION.md)
 
-> **装上就能用。** 拷进 `~/.claude/skills/`，跟 Claude Code 说「做一部短片」即可 ——
-> skill 本体是方法论和知识，不依赖任何脚本或模型。
+> **装上就能用。** 最省事的办法：把这句话丢给 Claude Code ——
+> 「帮我装一下这个 skill：https://github.com/L-Trunks/ai-film-skills，clone 下来跑 install.sh 就行」
+> 装完说一句「做一部短片」就会触发。skill 本体是方法论和知识，不依赖任何脚本或模型。
 >
 > 想跑仓库里的参考实现，改 `examples/scripts/config.py` 的三个路径，
 > 先 `python doctor.py` 体检一遍。
@@ -179,14 +180,43 @@ use_count: 4
 
 ## 怎么用
 
-### 第一步：装 skill（30 秒，到这里就能用了）
+### 第一步：装 skill（到这里就能用了）
+
+**最省事的办法 —— 把这句话丢给 Claude Code：**
+
+```
+帮我装一下这个 skill：https://github.com/L-Trunks/ai-film-skills
+clone 下来跑一下里面的 install.sh 就行
+```
+
+它会自己 clone、执行安装脚本、把六个 skill 放进 `~/.claude/skills/`。
+装过一次也没关系，同名目录会先备份再覆盖。
+
+<details>
+<summary>想自己动手</summary>
 
 ```bash
 git clone https://github.com/L-Trunks/ai-film-skills
-cp -r ai-film-skills/skills/* ~/.claude/skills/
+cd ai-film-skills
+bash install.sh                # Windows: powershell -ExecutionPolicy Bypass -File install.ps1
 ```
 
-然后跟 Claude Code 说「做一部短片」「跑一批氛围视频」就会触发。
+加 `--project` 就装到当前项目的 `.claude/skills/` 而不是个人目录。
+
+或者干脆手动拷：
+
+```bash
+cp -r skills/* ~/.claude/skills/
+```
+
+</details>
+
+装完跟 Claude Code 说「做一部短片」「跑一批氛围视频」就会触发。
+
+> **用 Codex 或别的 agent？**
+> 它们没有 Claude Code 那套 skill 自动触发机制，但这些文档本身就是纯 Markdown 方法论 ——
+> clone 下来，让 agent 读 `skills/local-ai-film/SKILL.md`，一样能带着你走完整个流程，
+> 只是需要你每次显式指一下路。
 
 **这一步之后 skill 已经完全可用了** —— 它会带着你走开片流程、查指纹避免同质化、
 按你的模型选路线、写分镜、避开知识库里那几十个坑。
