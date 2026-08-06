@@ -14,30 +14,31 @@
 
 三部，全部产自一张 **RTX 4070 Ti（12 GB）**，生成环节无云端 API。
 
+下面是片段动图（无声）。**完整版带声音**：
+▶ [vlog](./docs/assets/vlog.mp4) · [九尾](./docs/assets/jiuwei.mp4) · [山海](./docs/assets/shanhai.mp4)
+
 ### 《男友视角 vlog》— long-shot，2 段 / 4 镜 / 10.3 秒
 
-<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/vlog.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/vlog-grid.jpg" controls muted width="300"></video>
+<img src="./docs/assets/vlog.gif" width="240">
 
-**声音是模型直接生成的**，含中文台词与口型同步。每段自带一次段内硬切。
-关系感全靠「距离 + 朝向镜头的物理动作」——「一步一步凑近镜头直到脸占满画面」做得到，
-「头靠在镜头的肩上」做不到。
+**声音是模型直接生成的**，含中文台词与口型同步（动图里听不到，点上面的 mp4）。
+每段自带一次段内硬切。关系感全靠「距离 + 朝向镜头的物理动作」——
+上面这一下「一步一步凑近镜头直到脸占满画面」做得到，「头靠在镜头的肩上」做不到。
 
 ### 《九尾》— long-shot 链式长片，58 段接成一部
 
-<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/jiuwei.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/jiuwei-grid.jpg" controls muted width="640"></video>
+<img src="./docs/assets/jiuwei.gif" width="400">
 
 尾帧接首帧，同一角色贯穿。旁白与字幕后期配，BGM 一条贯穿。
 生成量 **57 段次 / 5 小时 GPU 时间**，其中 17 段废掉重来。
 
 ### 《山海》— short-shot 预告片
 
-<video src="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/shanhai.mp4" poster="https://github.com/L-Trunks/ai-film-skills/raw/master/docs/assets/shanhai-grid.jpg" controls muted width="640"></video>
+<img src="./docs/assets/shanhai.gif" width="400">
 
 **全片没有一只异兽出现全身**——只拍痕迹。这不是风格选择，是被模型逼出来的：
 山海经异兽没有真实照片作底，正面拍必假，30 镜砸 6 镜。
 
-> 播放器不显示的话，直接下载：
-> [vlog](./docs/assets/vlog.mp4) · [九尾](./docs/assets/jiuwei.mp4) · [山海](./docs/assets/shanhai.mp4)
 > 更多分镜与说明见 [成片画廊](./docs/gallery.md)。
 
 ---
