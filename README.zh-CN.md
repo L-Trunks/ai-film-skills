@@ -4,9 +4,11 @@
 
 [English](./README.md) · [成片画廊](./docs/gallery.md) · [两类 skill 的区别](./docs/how-skills-differ.md) · [12 GB 跑 MiniMax H3](./docs/minimax-h3-local-deploy.md) · [出处](./ATTRIBUTION.md)
 
-> **先说清楚：这不是一个 clone 下来就能跑的工具。**
-> 仓库里的脚本是我这台机器（RTX 4070Ti 12G + ComfyUI + LTX-2.3）的实现，你的路径、模型、显存都不一样，直接跑必然失败。
-> 真正值钱的是 `knowledge/` 里那些用几十小时 GPU 时间换来的坑，和 `directing/` 里那套防止每部片长一个样的机制。
+> **装上就能用。** 拷进 `~/.claude/skills/`，跟 Claude Code 说「做一部短片」即可 ——
+> skill 本体是方法论和知识，不依赖任何脚本或模型。
+>
+> 想跑仓库里的参考实现，改 `examples/scripts/config.py` 的三个路径，
+> 先 `python doctor.py` 体检一遍。
 
 ---
 
@@ -185,17 +187,51 @@ use_count: 4
 
 ## 怎么用
 
+### 第一步：装 skill（30 秒，到这里就能用了）
+
 ```bash
-git clone https://github.com/<you>/ai-film-skills
+git clone https://github.com/L-Trunks/ai-film-skills
 cp -r ai-film-skills/skills/* ~/.claude/skills/
 ```
 
 然后跟 Claude Code 说「做一部短片」「跑一批氛围视频」就会触发。
 
-第一次用建议先做两件事：
+**这一步之后 skill 已经完全可用了** —— 它会带着你走开片流程、查指纹避免同质化、
+按你的模型选路线、写分镜、避开知识库里那几十个坑。
+这些**不依赖任何脚本、模型或显卡**，你用云端 API 出片一样受用。
 
-1. 照 `profiles/calibration.md` 标定你自己的 profile —— **不做这步，所有秒数和镜头数都是错的**
-2. 把 `examples/scripts/` 里的路径改成你自己的（ComfyUI 位置、conda 环境、输出目录）
+### 第二步（可选）：标定你自己的 profile
+
+```
+照 profiles/calibration.md 走五步，本地约 40 分钟
+```
+
+不标定也能用，只是**算出来的镜头数和秒数会不准** ——
+因为公式取的是 profile 里的 `max_shot_sec`，那是我这台机器测出来的。
+
+### 第三步（可选）：跑仓库里的参考脚本
+
+`examples/scripts/` 是我这台机器的实现。所有机器相关的路径都集中在 `config.py`，
+不用翻脚本正文：
+
+```bash
+# 三选一
+set AIFILM_COMFY=D:\ComfyUI              # ① 环境变量
+set AIFILM_PY=D:\conda\envs\comfy\python.exe
+set AIFILM_ROOT=E:\我的短片
+
+cp config.py config_local.py             # ② 建本地覆盖文件（已在 .gitignore）
+                                         # ③ 或者直接改 config.py 的默认值
+```
+
+改完先体检：
+
+```bash
+python doctor.py
+```
+
+它会逐项检查 ComfyUI 目录、python、ffmpeg、模型文件在不在，
+ComfyUI 有没有起来，显存够不够，缺哪项直接告诉你改哪个变量。
 
 ---
 

@@ -26,3 +26,6 @@ desktop.ini
 
 # 本地覆盖：抄一份 profile 改成自己的机器，不要提交回来
 skills/local-ai-film/profiles/local-*.md
+
+# 本地配置覆盖，不要提交
+skills/local-ai-film/examples/scripts/config_local.py

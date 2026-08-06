@@ -4,9 +4,11 @@
 
 [中文](./README.zh-CN.md) · [Gallery](./docs/gallery.md) · [Two kinds of skill](./docs/how-skills-differ.md) · [MiniMax H3 on 12 GB](./docs/minimax-h3-local-deploy.md) · [Attribution](./ATTRIBUTION.md)
 
-> **Read this first: you cannot clone this and run it.**
-> The scripts here are wired to one specific machine (RTX 4070 Ti 12 GB + ComfyUI + LTX-2.3). Your paths, models and VRAM are different, so they will fail.
-> What's actually worth having is `knowledge/` — pitfalls bought with dozens of GPU-hours — and `directing/`, a mechanism that stops every film you make from turning out the same.
+> **Install it and it works.** Copy into `~/.claude/skills/` and tell Claude Code "make a short film" —
+> the skill itself is methodology and knowledge; it depends on no scripts, no models, no GPU.
+>
+> To run the reference implementations too, set three paths in `examples/scripts/config.py`
+> and run `python doctor.py` first.
 
 ---
 
@@ -191,17 +193,54 @@ families but requires reading `chain-consistency.md`.
 
 ## Usage
 
+### Step 1 — install the skills (30 seconds; you're done here)
+
 ```bash
-git clone https://github.com/<you>/ai-film-skills
+git clone https://github.com/L-Trunks/ai-film-skills
 cp -r ai-film-skills/skills/* ~/.claude/skills/
 ```
 
 Then tell Claude Code "make a short film" or "batch-run some atmospheric videos."
 
-Two things to do before your first run:
+**That's it — the skill is fully usable at this point.** It walks you through the opening
+ritual, blocks homogenization via the fingerprint, picks the route that matches your model,
+writes the shot list, and steers you around the several dozen pitfalls in `knowledge/`.
+None of that **needs scripts, models or a GPU** — it works just as well if you generate
+through a cloud API.
 
-1. Calibrate your own profile per `profiles/calibration.md` — **skip this and every duration and shot count you compute is wrong**
-2. Rewrite the paths in `examples/scripts/` (ComfyUI location, conda env, output directory)
+### Step 2 (optional) — calibrate your own profile
+
+```
+Follow the five steps in profiles/calibration.md — about 40 minutes locally
+```
+
+It works without this, but **your shot counts and durations will be wrong**, because the
+formulas read `max_shot_sec` out of a profile, and the shipped one was measured on my machine.
+
+### Step 3 (optional) — run the reference scripts
+
+`examples/scripts/` is my machine's implementation. Everything machine-specific lives in
+`config.py`, so you never have to grep through the scripts:
+
+```bash
+# pick one
+export AIFILM_COMFY=/path/to/ComfyUI          # 1. environment variables
+export AIFILM_PY=/path/to/python
+export AIFILM_ROOT=/path/to/output
+
+cp config.py config_local.py                  # 2. a local override (already gitignored)
+                                              # 3. or just edit config.py's defaults
+```
+
+Then check your setup:
+
+```bash
+python doctor.py
+```
+
+It verifies the ComfyUI directory, the interpreter, ffmpeg, the model files, whether ComfyUI
+is actually running and whether you have enough VRAM — and for anything missing, tells you
+which variable to change.
 
 ---
 

@@ -19,6 +19,10 @@ import argparse, json, os, subprocess, sys, time, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bgm_pick import analyze, score, TARGETS      # noqa: E402
 
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
+
 UA = {"User-Agent": "ai-film-skills/0.1 (royalty-free BGM sourcing)"}
 
 # 三档各自的搜索词。挑词的原则：描述「声音质地」而不是「情绪」——
@@ -156,7 +160,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("target", choices=list(TARGETS))
     ap.add_argument("--n", type=int, default=6, help="每档要留几首")
-    ap.add_argument("--out", default=r"E:\Projects\AI\popsci-studio\_视频剪辑流水线\bgm")
+    ap.add_argument("--out", default=C.BGM_DIR)
     a = ap.parse_args()
 
     stage = os.path.join(a.out, "_staging")

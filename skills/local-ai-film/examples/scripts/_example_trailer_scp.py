@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
 """SCP 三部曲预告片 —— 各 36 镜 + 标题卡，约 53 秒，2.39:1。
 
 为什么 SCP 比山海经适合这套流程：
@@ -309,7 +313,7 @@ def _film(name, key, shots, mv, seed, grade, curves, bgm, vol, face, outfit, att
             "edit": _edit(key), "title": {"text": name, "dur": 3.0, "after": key + "33"}}
 
 
-_M = r"E:\Projects\AI\popsci-studio\_视频剪辑流水线\bgm"
+_M = C.BGM_DIR
 FILMS = {
  # 防化服/面具遮脸 → 只查 outfit；唯一露脸的是急停那镜的研究员
  "breach": _film("收容失效", "b", BREACH, {k: v + " Locked-off camera, minimal drift."

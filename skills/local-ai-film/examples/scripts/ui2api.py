@@ -1,8 +1,12 @@
 """ComfyUI UI-格式工作流 → API-格式。用 /object_info 推断 widget 名字与顺序。"""
 import json, sys, urllib.request
 
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
+
 urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHandler({})))
-API = "http://127.0.0.1:8188"
+API = C.API
 SKIP = {"MarkdownNote", "Note", "PrimitiveNode", "Reroute"}
 BASIC = {"INT", "FLOAT", "STRING", "BOOLEAN", "COMBO"}
 

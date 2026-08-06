@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
 """第二批四部片。核心变化：去 AI 味。
 
 燃系翻车总结 →
@@ -320,22 +324,22 @@ FILMS = {
  "night": {"name": "夜班", "shots": NIGHT, "move": NIGHT_MOVE, "order": [s[0] for s in NIGHT],
            "neg": NEG, "seed": 9200, "glow": 0.18,
            "grade": "eq=saturation=1.02:contrast=1.05",
-           "bgm": r"E:\Projects\AI\popsci-studio\_视频剪辑流水线\bgm\Aitech.mp3",
+           "bgm": os.path.join(C.BGM_DIR, "Aitech.mp3"),
            "bgm_vol": 0.34, "dir": "夜班"},
  "hand":  {"name": "手上的活", "shots": HAND, "move": HAND_MOVE, "order": [s[0] for s in HAND],
            "neg": NEG, "seed": 9300, "glow": 0.18,
            "grade": "eq=saturation=1.04:contrast=1.04",
-           "bgm": r"E:\Projects\AI\reddit-video-cn\舒缓.mp3",
+           "bgm": os.path.join(C.BGM_DIR, "舒缓.mp3"),
            "bgm_vol": 0.30, "dir": "手上的活"},
  "winter": {"name": "北方的冬天", "shots": WINTER, "move": WINTER_MOVE, "order": [s[0] for s in WINTER],
            "neg": NEG, "seed": 9400, "glow": 0.20,
            "grade": "eq=saturation=0.98:contrast=1.06",
-           "bgm": r"E:\Projects\AI\reddit-video-cn\assets\audioknap-free-background-music-for-everyone-454587.mp3",
+           "bgm": os.path.join(C.BGM_DIR, "audioknap-free-background-music-for-everyone-454587.mp3"),
            "bgm_vol": 0.16, "dir": "北方的冬天"},
  "heal2": {"name": "唯美治愈v2", "shots": HEAL2, "move": HEAL2_MOVE, "order": [s[0] for s in HEAL2],
            "neg": NEG, "seed": 9500, "glow": 0.18,
            "grade": "eq=saturation=1.06:contrast=1.03",
-           "bgm": r"E:\Projects\AI\reddit-video-cn\music\monume-calm-nature-background-music-456360.mp3",
+           "bgm": os.path.join(C.BGM_DIR, "monume-calm-nature-background-music-456360.mp3"),
            "bgm_vol": 0.26, "dir": "唯美治愈v2"},
 }
 for c in FILMS.values():
