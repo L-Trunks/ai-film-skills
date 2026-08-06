@@ -1,0 +1,234 @@
+{
+  "1": {
+    "class_type": "UnetLoaderGGUF",
+    "inputs": {
+      "unet_name": "MiniMax-H3-FL2VA-Q4_0.gguf"
+    },
+    "_meta": {
+      "title": "[仅供 T2V] 社区 GGUF DiT —— I2V 会从第1帧起崩坏，做图生视频请改用 minimax_h3_api.json"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoaderGGUF",
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3-Q4_K_M.gguf",
+      "type": "minimax"
+    },
+    "_meta": {
+      "title": "文本编码器 —— type 必须是 minimax，写错会静默退回 SD 类型"
+    }
+  },
+  "3": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_fp16.safetensors"
+    },
+    "_meta": {
+      "title": "Video VAE"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "_meta": {
+      "title": "Audio VAE"
+    }
+  },
+  "5": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "placeholder.png"
+    },
+    "_meta": {
+      "title": "首帧（可选，纯 T2V 时把 6 的 first_frame 连线删掉）"
+    }
+  },
+  "16": {
+    "class_type": "ImageScaleToTotalPixels",
+    "inputs": {
+      "image": [
+        "5",
+        0
+      ],
+      "upscale_method": "nearest-exact",
+      "megapixels": 0.4,
+      "resolution_steps": 32
+    },
+    "_meta": {
+      "title": "★ 首帧必须先缩到目标像素量 —— 省掉这步 I2V 会从第 1 帧起崩坏（实测）。resolution_steps 在 API 格式下必填，取 32 对齐 align_to"
+    }
+  },
+  "17": {
+    "class_type": "GetImageSize",
+    "inputs": {
+      "image": [
+        "16",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "★ width/height 取缩放后的实际尺寸，不能手写"
+    }
+  },
+  "6": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "prompt": "",
+      "width": [
+        "17",
+        0
+      ],
+      "height": [
+        "17",
+        1
+      ],
+      "length": 124,
+      "first_frame": [
+        "16",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "length 会向上吸附到 17k+5；124=5.17s 是训练下限"
+    }
+  },
+  "7": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "scheduler": "simple",
+      "steps": 20,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "官方模板 20 步"
+    }
+  },
+  "8": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    },
+    "_meta": {
+      "title": "官方采样器"
+    }
+  },
+  "9": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 1
+    }
+  },
+  "10": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "conditioning": [
+        "6",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "无 CFG —— 蒸馏模型，没有负向通路（同 LTX，见 pitfalls 坑 ⑧）"
+    }
+  },
+  "11": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "9",
+        0
+      ],
+      "guider": [
+        "10",
+        0
+      ],
+      "sampler": [
+        "8",
+        0
+      ],
+      "sigmas": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "6",
+        1
+      ]
+    }
+  },
+  "12": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "视频轨"
+    }
+  },
+  "13": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "11",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "音频轨 —— 与视频同一个 latent，NestedTensor 装两路"
+    }
+  },
+  "14": {
+    "class_type": "CreateVideo",
+    "inputs": {
+      "images": [
+        "12",
+        0
+      ],
+      "audio": [
+        "13",
+        0
+      ],
+      "fps": 24
+    }
+  },
+  "15": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "14",
+        0
+      ],
+      "filename_prefix": "video/H3",
+      "format": "auto",
+      "codec": "auto"
+    }
+  }
+}

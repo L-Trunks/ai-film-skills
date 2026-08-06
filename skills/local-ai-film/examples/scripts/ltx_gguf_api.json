@@ -1,0 +1,588 @@
+{
+ "55": {
+  "class_type": "LTXDirectorCropGuides",
+  "inputs": {
+   "positive": [
+    "133",
+    0
+   ],
+   "negative": [
+    "133",
+    1
+   ],
+   "latent": [
+    "34",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXDirectorCropGuides"
+  }
+ },
+ "18": {
+  "class_type": "LTXVConcatAVLatent",
+  "inputs": {
+   "video_latent": [
+    "132",
+    2
+   ],
+   "audio_latent": [
+    "34",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "LTXVConcatAVLatent"
+  }
+ },
+ "20": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  },
+  "_meta": {
+   "title": "KSamplerSelect"
+  }
+ },
+ "21": {
+  "class_type": "BasicScheduler",
+  "inputs": {
+   "scheduler": "linear_quadratic",
+   "steps": 4,
+   "denoise": 0.42,
+   "model": [
+    "132",
+    3
+   ]
+  },
+  "_meta": {
+   "title": "BasicScheduler"
+  }
+ },
+ "13": {
+  "class_type": "LatentUpscaleModelLoader",
+  "inputs": {
+   "model_name": "ltx-2.3-spatial-upscaler-x2-1.1.safetensors"
+  },
+  "_meta": {
+   "title": "LatentUpscaleModelLoader"
+  }
+ },
+ "14": {
+  "class_type": "LTXVLatentUpsampler",
+  "inputs": {
+   "samples": [
+    "55",
+    2
+   ],
+   "upscale_model": [
+    "13",
+    0
+   ],
+   "vae": [
+    "36",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXVLatentUpsampler"
+  }
+ },
+ "27": {
+  "class_type": "LTXVConditioning",
+  "inputs": {
+   "positive": [
+    "137",
+    1
+   ],
+   "negative": [
+    "128",
+    0
+   ],
+   "frame_rate": [
+    "137",
+    6
+   ]
+  },
+  "_meta": {
+   "title": "LTXVConditioning"
+  }
+ },
+ "128": {
+  "class_type": "ConditioningZeroOut",
+  "inputs": {
+   "conditioning": [
+    "137",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "ConditioningZeroOut"
+  }
+ },
+ "28": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "cfg": 1,
+   "model": [
+    "133",
+    3
+   ],
+   "positive": [
+    "133",
+    0
+   ],
+   "negative": [
+    "133",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "CFGGuider"
+  }
+ },
+ "29": {
+  "class_type": "LTXVConcatAVLatent",
+  "inputs": {
+   "video_latent": [
+    "133",
+    2
+   ],
+   "audio_latent": [
+    "137",
+    3
+   ]
+  },
+  "_meta": {
+   "title": "LTXVConcatAVLatent"
+  }
+ },
+ "32": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  },
+  "_meta": {
+   "title": "KSamplerSelect"
+  }
+ },
+ "33": {
+  "class_type": "BasicScheduler",
+  "inputs": {
+   "scheduler": "linear_quadratic",
+   "steps": 8,
+   "denoise": 1,
+   "model": [
+    "133",
+    3
+   ]
+  },
+  "_meta": {
+   "title": "BasicScheduler"
+  }
+ },
+ "1": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "54",
+    2
+   ],
+   "vae": [
+    "36",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "VAEDecode"
+  }
+ },
+ "2": {
+  "class_type": "CreateVideo",
+  "inputs": {
+   "bit_depth": 8,
+   "images": [
+    "1",
+    0
+   ],
+   "audio": [
+    "24",
+    0
+   ],
+   "fps": [
+    "137",
+    6
+   ]
+  },
+  "_meta": {
+   "title": "CreateVideo"
+  }
+ },
+ "37": {
+  "class_type": "SaveVideo",
+  "inputs": {
+   "filename_prefix": "video/LTX_Director",
+   "format": "auto",
+   "codec": "auto",
+   "video": [
+    "2",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "SaveVideo"
+  }
+ },
+ "17": {
+  "class_type": "CFGGuider",
+  "inputs": {
+   "cfg": 1,
+   "model": [
+    "132",
+    3
+   ],
+   "positive": [
+    "132",
+    0
+   ],
+   "negative": [
+    "132",
+    1
+   ]
+  },
+  "_meta": {
+   "title": "CFGGuider"
+  }
+ },
+ "34": {
+  "class_type": "LTXVSeparateAVLatent",
+  "inputs": {
+   "av_latent": [
+    "31",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXVSeparateAVLatent"
+  }
+ },
+ "54": {
+  "class_type": "LTXDirectorCropGuides",
+  "inputs": {
+   "positive": [
+    "132",
+    0
+   ],
+   "negative": [
+    "132",
+    1
+   ],
+   "latent": [
+    "22",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXDirectorCropGuides"
+  }
+ },
+ "22": {
+  "class_type": "LTXVSeparateAVLatent",
+  "inputs": {
+   "av_latent": [
+    "19",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXVSeparateAVLatent"
+  }
+ },
+ "19": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "17",
+    0
+   ],
+   "sampler": [
+    "20",
+    0
+   ],
+   "sigmas": [
+    "21",
+    0
+   ],
+   "latent_image": [
+    "18",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "SamplerCustomAdvanced"
+  }
+ },
+ "31": {
+  "class_type": "SamplerCustomAdvanced",
+  "inputs": {
+   "noise": [
+    "30",
+    0
+   ],
+   "guider": [
+    "28",
+    0
+   ],
+   "sampler": [
+    "32",
+    0
+   ],
+   "sigmas": [
+    "33",
+    0
+   ],
+   "latent_image": [
+    "29",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "SamplerCustomAdvanced"
+  }
+ },
+ "24": {
+  "class_type": "LTXVAudioVAEDecode",
+  "inputs": {
+   "samples": [
+    "22",
+    1
+   ],
+   "audio_vae": [
+    "8",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXVAudioVAEDecode"
+  }
+ },
+ "36": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "LTX23_video_vae_bf16.safetensors"
+  },
+  "_meta": {
+   "title": "VAELoader"
+  }
+ },
+ "10": {
+  "class_type": "ModelPreviewOverrideKJ",
+  "inputs": {
+   "max_resolution": 0,
+   "jpeg_quality": 80,
+   "suppress_default_preview": true,
+   "preview_frames": 240,
+   "preview_fps": 24,
+   "model": [
+    "136",
+    0
+   ],
+   "vae": [
+    "6",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "ModelPreviewOverrideKJ"
+  }
+ },
+ "132": {
+  "class_type": "LTXDirectorGuide",
+  "inputs": {
+   "ic_lora_name": "None",
+   "ic_lora_strength": 1,
+   "scale_by": 1,
+   "upscale_method": "bicubic",
+   "image_attention_strength": 1,
+   "crop": "center",
+   "auto_snap_ic_grid": true,
+   "use_tiled_encode": false,
+   "tile_size": 256,
+   "tile_overlap": 64,
+   "retake_mode": false,
+   "positive": [
+    "55",
+    0
+   ],
+   "negative": [
+    "55",
+    1
+   ],
+   "vae": [
+    "36",
+    0
+   ],
+   "latent": [
+    "14",
+    0
+   ],
+   "guide_data": [
+    "137",
+    4
+   ],
+   "motion_guide_data": [
+    "137",
+    5
+   ],
+   "model": [
+    "137",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXDirectorGuide"
+  }
+ },
+ "133": {
+  "class_type": "LTXDirectorGuide",
+  "inputs": {
+   "ic_lora_name": "None",
+   "ic_lora_strength": 1,
+   "scale_by": 0.5,
+   "upscale_method": "bicubic",
+   "image_attention_strength": 1,
+   "crop": "center",
+   "auto_snap_ic_grid": true,
+   "use_tiled_encode": false,
+   "tile_size": 256,
+   "tile_overlap": 64,
+   "retake_mode": false,
+   "positive": [
+    "27",
+    0
+   ],
+   "negative": [
+    "27",
+    1
+   ],
+   "vae": [
+    "36",
+    0
+   ],
+   "latent": [
+    "137",
+    2
+   ],
+   "guide_data": [
+    "137",
+    4
+   ],
+   "motion_guide_data": [
+    "137",
+    5
+   ],
+   "model": [
+    "137",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXDirectorGuide"
+  }
+ },
+ "8": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "LTX23_audio_vae_bf16.safetensors"
+  },
+  "_meta": {
+   "title": "VAELoader"
+  }
+ },
+ "6": {
+  "class_type": "VAELoaderKJ",
+  "inputs": {
+   "vae_name": "taeltx2_3.safetensors",
+   "device": "main_device",
+   "weight_dtype": "bf16"
+  },
+  "_meta": {
+   "title": "Tiny VAELoader KJ"
+  }
+ },
+ "30": {
+  "class_type": "RandomNoise",
+  "inputs": {
+   "noise_seed": 0
+  },
+  "_meta": {
+   "title": "RandomNoise"
+  }
+ },
+ "134": {
+  "class_type": "DualCLIPLoaderGGUF",
+  "inputs": {
+   "clip_name1": "gemma-3-12b-it-Q3_K_M.gguf",
+   "clip_name2": "ltx-2.3_text_projection_bf16.safetensors",
+   "type": "ltxv"
+  },
+  "_meta": {
+   "title": "DualCLIPLoaderGGUF"
+  }
+ },
+ "137": {
+  "class_type": "LTXDirector",
+  "inputs": {
+   "start_second": 0,
+   "end_second": 5,
+   "duration_seconds": 5,
+   "start_frame": 0,
+   "end_frame": 120,
+   "duration_frames": 120,
+   "timeline_data": "{\"mainTrackEnabled\":true,\"audioTrackEnabled\":true,\"motionTrackEnabled\":true,\"propHeight\":90,\"globalPropHeight\":60,\"showFilenames\":true,\"overrideAudio\":false,\"inpaint_audio\":true,\"global_prompt\":\"\",\"retake_global_prompt\":\"\",\"retakeMode\":false,\"retakeStart\":24,\"retakeLength\":48,\"retakePrompt\":\"\",\"retakeStrength\":1,\"retakeVideo\":null,\"normalStartFrame\":0,\"normalDurationFrames\":120,\"segments\":[],\"motionSegments\":[],\"audioSegments\":[]}",
+   "local_prompts": "",
+   "segment_lengths": "",
+   "epsilon": 0.001,
+   "guide_strength": "",
+   "use_custom_audio": true,
+   "use_custom_motion": true,
+   "inpaint_audio": true,
+   "frame_rate": 24,
+   "display_mode": "seconds",
+   "custom_width": 0,
+   "custom_height": 0,
+   "resize_method": "maintain aspect ratio",
+   "divisible_by": 32,
+   "img_compression": 18,
+   "override_audio": false,
+   "model": [
+    "10",
+    0
+   ],
+   "clip": [
+    "134",
+    0
+   ],
+   "audio_vae": [
+    "8",
+    0
+   ]
+  },
+  "_meta": {
+   "title": "LTXDirector"
+  }
+ },
+ "136": {
+  "class_type": "UnetLoaderGGUF",
+  "inputs": {
+   "unet_name": "ltx-2.3-22b-distilled-1.1-Q4_K_M.gguf"
+  },
+  "_meta": {
+   "title": "UnetLoaderGGUF"
+  }
+ }
+}

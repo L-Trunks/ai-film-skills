@@ -1,0 +1,66 @@
+{
+  "skill": "shot-breakdown",
+  "version": "0.1.0",
+  "source_book": "多源蒸馏《本地链路可生产的无对白情绪短片分镜》",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "角色形象已经锁好了，批量抽了一批图，现在要挑一下哪些能用",
+      "expected_behavior": "应激活 shot-breakdown，指导按脚本意图逐张筛选，标记可用/弃用",
+      "notes": "正面场景：批量出图后筛选"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这个角色的形象已经重抽了好几次都不对，要不要继续抽下去？",
+      "expected_behavior": "应激活 shot-breakdown，给出成本判停建议（3-5次上限），判断继续抽还是弃用改故事",
+      "notes": "正面场景：重抽次数纠结，成本判停"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "这批图里人物形象跑偏、景别机位也不对，接下来怎么处理？",
+      "expected_behavior": "应激活 shot-breakdown，区分弃用（人物不对）和二次修正（景别机位不对重抽）两种情况",
+      "notes": "正面场景：混合问题的筛选与修正"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "这个场景不管怎么抽都抽不对，是不是该放弃这个镜头去改故事了？",
+      "expected_behavior": "应激活 shot-breakdown，判定进入弃用流程，倒推修改分镜/故事",
+      "notes": "正面场景：判停后的弃用决策"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "角色形象已经锁定了，这一镜想要治愈系的感觉，提示词该怎么写？",
+      "expected_behavior": "不应激活 shot-breakdown，应激活 emotion-to-camera-language——这是生成前怎么描述的问题，还没到批量生成筛选阶段",
+      "notes": "跨 skill 混淆诱饵（硬性要求）：shot-breakdown（生成后筛）vs emotion-to-camera-language（生成前描述）易混对"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "角色形象还没锁定，能先批量出图看看效果吗？",
+      "expected_behavior": "不应激活，应先转 lock-character-reference——没有锁定的形象作为基准，筛选和修正都没有意义",
+      "notes": "诱饵：形象未锁定，depends-on 前提未满足"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "素材都筛完了，现在准备进剪辑软件，第一步该干嘛？",
+      "expected_behavior": "不应激活，应激活 editing-triad——已经进入剪辑决策阶段，不是筛选生成结果",
+      "notes": "诱饵：筛选已完成，进入下游剪辑阶段"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "这个镜头抽了两次都不满意，要不要现在就放弃改故事？",
+      "expected_behavior": "合理判断：2次远低于建议的3-5次判停上限，应鼓励再多试几次而非过早放弃，除非明显能判断'不在范畴里'（如人物形象完全跑偏）",
+      "notes": "边界：重抽次数尚未达到判停阈值，考验是否会过早触发弃用建议"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "8 条：4 should_trigger + 3 should_not_trigger（含跨 skill 混淆诱饵 should-not-trigger-01：生成前描述应转 emotion-to-camera-language）+ 1 edge_case。"
+}

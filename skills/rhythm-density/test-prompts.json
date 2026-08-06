@@ -1,0 +1,66 @@
+{
+  "skill": "rhythm-density",
+  "version": "0.1.0",
+  "source_book": "多源蒸馏《本地链路可生产的无对白情绪短片分镜》",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "这几个镜头都是本地生成的，每个不到10秒，该怎么分配每一镜的时长？",
+      "expected_behavior": "应激活 rhythm-density，按高能段2-3秒/首尾呼吸段4-5秒的疏密对比给出排布建议",
+      "notes": "正面场景：多个≤10s短镜头时长排布"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这条无对白情绪片剪出来感觉太碎太赶，是不是快切用太多了？",
+      "expected_behavior": "应激活 rhythm-density，检查是否缺少疏密对比、高能段与呼吸段是否区分清楚",
+      "notes": "正面场景：节奏感不对（太碎）"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "想做那种一镜到底的长镜头沉浸感，但本地动作迁移到10秒就硬切了，怎么办？",
+      "expected_behavior": "应激活 rhythm-density，给出'同机位连续两镜+极缓运镜拼接'的伪长镜方案，并说明10秒是工具能力硬顶不能突破",
+      "notes": "正面场景：长镜头诉求撞上本地硬顶"
+    },
+    {
+      "id": "should-trigger-04",
+      "type": "should_trigger",
+      "prompt": "在写分镜表，需要给每个镜号预先标一个大致时长",
+      "expected_behavior": "应激活 rhythm-density，指导标出情绪/动作曲线上的高能与松弛段落，分别定时长",
+      "notes": "正面场景：分镜表阶段预标时长"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这批素材要进剪辑软件了，但不知道第一步该做什么，是不是先选好BGM风格？",
+      "expected_behavior": "不应激活 rhythm-density，应激活 editing-triad——这是剪辑三个维度整体决策顺序的问题，不是单纯的秒数排布",
+      "notes": "跨 skill 混淆诱饵（硬性要求）：rhythm-density（节奏本身）vs editing-triad（剪辑三要素/整体顺序）易混对"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我这期科普视频镜头切得太密了，是不是该调整一下剪辑节奏？",
+      "expected_behavior": "不应激活 rhythm-density，应激活 shot-rhythm-model——这是有旁白的科普/教程片，节奏锚点是内容段类型和语速底盘，不是情绪起伏，两套参数不可互套",
+      "notes": "跨书诱饵（任务硬性要求）：科普片场景，应转 shot-rhythm-model 而非本 skill"
+    },
+    {
+      "id": "should-not-trigger-03",
+      "type": "should_not_trigger",
+      "prompt": "这一镜想要那种被审视的压迫感，机位该用仰拍还是俯拍？",
+      "expected_behavior": "不应激活 rhythm-density，应激活 emotion-to-camera-language——这是单镜内部机位/光位的问题，不是镜与镜之间的时长排布",
+      "notes": "诱饵：rhythm-density（镜间时长）vs emotion-to-camera-language（一镜之内画面）易混对"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "这条片子大部分是无对白情绪镜头，但中间插了一小段旁白解说，节奏该怎么统一定？",
+      "expected_behavior": "合理判断：不能整片套用同一套参数——无对白段落用本 skill 的高能/呼吸疏密对比，插入旁白的那一小段应转 shot-rhythm-model 按内容段类型和语速锚点单独处理，两段不能共用一套数值",
+      "notes": "边界：混合片型（大部分无对白+局部有旁白），考验是否会误判为纯情绪片整片适用本 skill"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "8 条：4 should_trigger + 3 should_not_trigger（含跨 skill 混淆诱饵 should-not-trigger-01：应转 editing-triad；及任务要求的跨书诱饵 should-not-trigger-02：科普片场景应转 shot-rhythm-model）+ 1 edge_case。"
+}
