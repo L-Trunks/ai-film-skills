@@ -10,7 +10,11 @@
 """
 import os, re, subprocess, math, sys, glob
 
-G = r"E:\Projects\AI\popsci-studio\_短片\成品"
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
+
+G = os.path.join(C.ROOT, "成品")
 TARGET = 0.075
 
 

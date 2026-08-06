@@ -17,10 +17,14 @@ sys.path.insert(0, HERE)
 MOD = sys.argv[1] if len(sys.argv) > 1 else "films8"
 KEY = sys.argv[2] if len(sys.argv) > 2 else "shanhai"
 import importlib
+
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
 F = importlib.import_module(MOD)
 CFG = F.FILMS[KEY]
 
-ROOT = r"E:\Projects\AI\popsci-studio\_短片"
+ROOT = C.ROOT
 BASE = os.path.join(ROOT, CFG["dir"])
 BR, CUT, OUT = os.path.join(BASE, "broll"), os.path.join(BASE, "cut"), os.path.join(BASE, "out")
 FPS = 24
@@ -87,7 +91,7 @@ def make_title(text, dur):
     dst = os.path.join(CUT, "_title.mp4")
     font = os.path.join(HERE, "kai.ttf")
     if not os.path.exists(font):
-        shutil.copyfile(r"C:\Windows\Fonts\simkai.ttf", font)
+        shutil.copyfile(C.FONT, font)
     n = int(dur * FPS)
     a = "if(lt(t,0.5),t/0.5,if(lt(t,%.2f),1,max(0,(%.2f-t)/0.6)))" % (dur - 0.6, dur)
     z = "(1.00+0.05*(pow(min(on/%d,1),2)*(3-2*min(on/%d,1))))" % (n - 1, n - 1)

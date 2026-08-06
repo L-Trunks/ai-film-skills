@@ -7,15 +7,19 @@ urllib.request.install_opener(urllib.request.build_opener(urllib.request.ProxyHa
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import importlib
+
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
 F = importlib.import_module(os.environ.get('FILMS_MODULE','films'))
 
-API = "http://127.0.0.1:8188"
-PY_COMFY = r"D:\Software\conda\envs\comfyui_env\python.exe"
-CO = r"D:\ComfyUI\output"
-CI = r"D:\ComfyUI\input"
-ROOT = r"E:\Projects\AI\popsci-studio\_短片"   # 所有短片统一收在这里
+API = C.API
+PY_COMFY = C.PY
+CO = C.CO
+CI = C.CI
+ROOT = C.ROOT   # 所有短片统一收在这里
 WF = os.path.join(HERE, "ltx_gguf_api.json")
-UNET = "LTX-2.3-22B-distilled-1.1-Q4_K_M.gguf"
+UNET = C.UNET_LTX
 LOG = os.path.join(HERE, "films_comfy.log")
 
 
@@ -61,9 +65,9 @@ def start_comfy():
     env = dict(os.environ, PYTHONIOENCODING="utf-8", PYTHONUNBUFFERED="1",
                PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True")
     f = open(LOG, "ab")
-    subprocess.Popen([PY_COMFY, "-s", r"D:\ComfyUI\main.py", "--listen", "127.0.0.1",
+    subprocess.Popen([PY_COMFY, "-s", C.MAIN, "--listen", "127.0.0.1",
                       "--port", "8188", "--cache-none"],
-                     cwd=r"D:\ComfyUI", env=env, stdout=f, stderr=f,
+                     cwd=C.COMFY, env=env, stdout=f, stderr=f,
                      creationflags=subprocess.CREATE_NO_WINDOW)
     for _ in range(70):
         time.sleep(5)
@@ -125,7 +129,7 @@ def gen_keyframes(key, cfg):
             if not os.path.exists(os.path.join(CI, "kf_%s_%s.png" % (key, sid)))]
     if not todo:
         log("[%s] 关键帧齐全，跳过" % key); return
-    zwf = r"E:\Projects\AI\popsci-studio\z-image.json"
+    zwf = C.T2I_WORKFLOW
     # z-image 泄漏比 LTX 慢，但 70 张连跑同样能把 ComfyUI 撑到 17GB 常驻，
     # 把后续 LTX 的 offload 逼进页面文件 → 采样从 12s/it 掉到 120s/it（踩过）。
     # 所以每 KF_BATCH 张重启一次。

@@ -11,11 +11,15 @@ sys.path.insert(0, HERE)
 os.environ["FILMS_MODULE"] = "films4"
 import films4 as F
 
-BASE = r"E:\Projects\AI\popsci-studio\_短片\奇形怪状"
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
+
+BASE = os.path.join(C.ROOT, "奇形怪状")
 BR, LB, OUT = os.path.join(BASE, "broll"), os.path.join(BASE, "broll_labeled"), os.path.join(BASE, "out")
-FONT_SRC = r"C:\Windows\Fonts\simkai.ttf"
+FONT_SRC = C.FONT
 FONT = os.path.join(HERE, "kai.ttf")
-BGM = r"E:\Projects\AI\popsci-studio\_视频剪辑流水线\bgm\cand_volatile.mp3"
+BGM = os.path.join(C.BGM_DIR, "cand_volatile.mp3")
 BGM_VOL = 0.19          # 由 audioknap@0.23→RMS 0.0685 反推，目标 RMS 0.06
 
 D, T = F.FRAMES / 24.0, F.TRANS

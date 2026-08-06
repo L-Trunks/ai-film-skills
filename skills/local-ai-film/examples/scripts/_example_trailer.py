@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import config as C   # 机器相关的路径全在 config.py，见同目录 README
 """《山海》v2 —— 39 镜 + 标题卡，约 56 秒，2.39:1。
 
 相对 v1 的三处修正：
@@ -194,7 +198,7 @@ FILMS = {
    "curves": "0/0 0.25/0.21 0.75/0.84 1/1",
    "consistency": CONS,
    "attrs": ATTRS,
-   "bgm": r"E:\Projects\AI\popsci-studio\_视频剪辑流水线\bgm\cand_volatile.mp3",
+   "bgm": os.path.join(C.BGM_DIR, "cand_volatile.mp3"),
    "bgm_vol": 0.20,
    "dir": "山海",
    "edit": EDIT,
