@@ -15,10 +15,24 @@
 
 ## Watch first
 
-Two films, both produced on one **RTX 4070 Ti (12 GB)**. No cloud API in the generation path.
+Three films, all produced on one **RTX 4070 Ti (12 GB)**. No cloud API in the generation path.
 
 The clips below are silent GIFs. **Full versions with sound**:
-▶ [Nine Tails](./docs/assets/jiuwei.mp4) · [Shan Hai](./docs/assets/shanhai.mp4)
+▶ [The Jailer](./docs/assets/yuzu.mp4) · [Nine Tails](./docs/assets/jiuwei.mp4) · [Shan Hai](./docs/assets/shanhai.mp4)
+
+### *The Jailer* — long-shot, episodic drama with dialogue
+
+<img src="./docs/assets/yuzu.gif" width="400">
+
+▶ **[48-second clip, with sound](./docs/assets/yuzu.mp4)** — episodes 1–2, from 1'34" to 2'22".
+
+Two episodes, 40 and 34 shots, 1'47" each. Native lip-synced dialogue from the model,
+re-voiced in post. **This is the first one where the audience checks your work**: the same
+character has to still be the same character forty shots later, and the lines have to line up.
+
+It also overturned two of our own conclusions — that over-long prompts should be cut down,
+and that `audio: BGM throughout` was unbreakable. Both are written up in the
+[gallery](./docs/gallery.md).
 
 ### *Nine Tails* — long-shot, chained: 58 segments joined into one film
 
@@ -66,7 +80,7 @@ Before writing any shot, you fill in five orthogonal dimensions and must differ 
 | Time structure | linear / reverse / loop / parallel cut / single-moment slices |
 | POV | omniscient / follow one person / surveillance·instrument / object's view / absent |
 | Tempo | steady / accelerate-to-burst / front-loaded / two breaths / fully static |
-| Audio | BGM throughout / SFX-driven / ambient only / total silence / desynced |
+| Audio | BGM throughout / dialogue-driven / SFX-driven / ambient only / total silence / desynced |
 | Ending | empty wide / return to first shot / hard cut to black / unresolved / mundane |
 
 But **checking that table alone will not catch real repetition.** Those three SCP films could each have filled it differently and still come out shot-for-shot identical, because the repetition lives one level down — at *section function → concrete shot design*.
@@ -124,11 +138,41 @@ What you get instead is a blank template plus a **five-step calibration** to mea
 - **Generic upscalers wreck small faces.** Below ~110px face width, ESRGAN melts features together and grows crosshatch artifacts on skin; above 150px it's harmless. Fix it at generation time — an upscaler cannot invent detail that was never generated. **Raising the generation resolution is the cheapest lever**: 0.3 MP → 0.5 MP is a 1.30× linear scale, turning an 86px face into 112px, and you only need to raise it for the shots that need it. Faces under ~60px need a different framing, not a different parameter. Deciding per shot in post is the last-resort fallback, and what it buys you is "stops inventing," not "fixed."
 - **Face restoration is a liability for non-human characters.** CodeFormer turned pale amber fox-spirit irises grey-blue; `fidelity=0.9` didn't stop it. Its prior for "normal human face" is too strong.
 - **Rebuild timestamps after concat.** Without `setpts=N/FPS/TB` the encoder silently drops frames (6062 → 6013 measured), and the loss accumulates — audio drifts further out of sync the longer the film runs.
+- **A simile gets rendered as a literal object.** "A burn scar on his wrist, *about the size of a
+  large coin*" — and the wrist gets an actual coin-shaped thing on it. This is harder to catch than
+  a stray `never X`, because reading the sentence back, you don't feel like you mentioned a coin.
+- **When a composition instruction doesn't execute, it's a weight fight, not a wording problem.**
+  Thirty words of instruction get diluted by three hundred words of style anchor and set
+  description, and the frame collapses back to the model's default. Two levers work: repeat the
+  instruction **at both the head and the tail** of the prompt, and write composition as something
+  physically incapable of holding anything else ("the top third is sky only, the bottom third is
+  ground only, he fits inside the band between them"). Piling on adjectives does **not** work.
+  Cutting the prompt down does work — but it buys obedience with picture quality, which is a bad
+  trade whenever the background is load-bearing.
 
 Chained long-form (dozens of segments joined tail-to-head) has its own body of pitfalls in
 `knowledge/chain-consistency.md`: character drift needs periodic re-anchoring, the anchor prompt
 must carry the full character description, empty shots must never be anchored, and the lead's
 "white hair" bleeds onto everyone else in frame.
+
+Films **with dialogue** add a whole second set — `knowledge/dialogue-drama.md`: a shared constants
+layer for characters and sets, a **give-up list** of the six things the model cannot do (so you
+stop burning rerolls on them), one single source of truth for every line of dialogue, and four
+post-production bugs that only appear when several correct timelines are laid on top of each other.
+
+### Running unattended: turn "I can't tell" into a number
+
+`knowledge/auto-review.md`. Overnight there is nobody to ask, and saving the doubtful shots for
+morning means the GPU burned all night for nothing. So every "should this pass?" becomes something
+computable: *shot from behind* → face count == 0; *subject in the left third* → keypoint bbox
+centre x; *wide shot showing the whole body* → knee/ankle keypoint scores.
+
+**The part people skip is the one that matters: regression-test the checker against known-good
+footage before you trust it, and look for false positives, not misses.** An unvalidated checker
+spends the night killing good frames by a wrong rule — worse than having no checker. Ours turned
+up three classes of its own false positives (direction words read as positions; a ground-level
+shot of shoes counted as "8 people"; the wrong person measured in an over-shoulder shot) — and,
+as a free side-effect, four genuine defects in footage we had already shipped.
 
 ---
 
@@ -158,12 +202,17 @@ The opening flow:
 8.  Batch run          → examples/scripts/
 9.  Post               → knowledge/post-production.md
 10. Review             → knowledge/pitfalls.md, item by item
+                         unattended? → knowledge/auto-review.md
 11. Write fingerprint  → films.jsonl                ← close the loop or it all stops working
 ```
 
 Steps 1–3 gate step 6. Step 11 closes the loop — skip it and the whole mechanism silently dies.
 
-### Two orthogonal forks
+**If the film has dialogue, read `knowledge/dialogue-drama.md` before step 6** — the constants
+layer, the give-up list and the single-source-of-truth rule for dialogue all have to be settled
+before you write shots. Retrofitting them is a rewrite.
+
+### Three orthogonal forks
 
 **By model family** (the profile's `family` field):
 
@@ -179,6 +228,11 @@ how to write relationships all flip between them. Know which family you're on be
 **By production mode**: one-off (atmospheric pieces, trailers) or chained (narrative films —
 tail frame becomes the next head frame, one character throughout). Chaining works on both
 families but requires reading `chain-consistency.md`.
+
+**By whether there's dialogue**: silent films can dodge character consistency entirely (masks,
+backlit silhouettes, one of ours is 17 shots with no face in any of them). A film with dialogue
+can't dodge anything — the audience checks. That fork requires `dialogue-drama.md` and, on a
+`long-shot` model with native audio, the `episode-drama` skeleton.
 
 ---
 

@@ -63,7 +63,12 @@ kf_batch_restart: n/a               # H3 不需要单独出关键帧，可纯 T2
 
 # ── 模型行为 ──
 text_sensitivity: low               # 实测：菜单板出了清晰正确的汉字，与 LTX 的必出乱码相反
-motion_style: null                  # 待测（探针 B）
+motion_style: arc                   # 实测：转头/推镜/横摇都完整执行，动作弧线走得完，
+                                    # 不是 LTX 那种「只能写凝住的瞬间」
+in_segment_hard_cut: true           # 段内真能硬切，但写法很挑 —— 见下文「段内硬切」
+cut_timing_controllable: false      # 切几刀听指令，第几秒切不听（要求 2s，实切 4.0s）
+prompt_len_costs_vram: true         # ⚠️ 提示词长度是显存变量，长 prompt 直接 OOM
+face_min_megapixels: 1.0            # 低于约 1MP 模型会扭曲人脸 → 0.31MP 下远景人物只能当剪影
 concept_blindspots: []
 
 # ── 云端 API 才有的能力，本地也具备 ──
@@ -220,6 +225,49 @@ KSamplerSelect(res_multistep) ─→ SamplerCustomAdvanced ─→ latent
 这也是 profile 机制的价值示例：同一条「知识」在不同模型上结论相反，
 写死在正文里必然误导，挂在 profile 上才成立。
 
+## 段内硬切 —— 能做，但写法很挑（2026-08-17 实测）
+
+同一首帧、同一场景，只改提示词写法，跑了三次：
+
+| 写法 | 结果 |
+|---|---|
+| `HARD CUT.`（直接命名转场） | ❌ 变成镜头推穿过去的**连续转场**，没有跳变 |
+| **时间码 + 显式禁 fade** | ✅ **一帧跳完，零过渡** |
+
+生效的写法：
+
+```
+[0-2 seconds] Medium shot. 动作…, camera pushes in.
+[2-5 seconds] Wide shot. 动作…, camera pans right.
+Use hard cuts only. No fades, no dissolves, no soft transitions.
+```
+
+两个要点缺一不可：① 用 `[a-b seconds]` 时间码分块；② 末尾显式写死
+`no fades / no dissolves / no soft transitions`。只写 `HARD CUT` 不触发 ——
+fal 官方 guide 的说法是「把转场写成物理事件，别去命名它」。
+
+⚠️ **切点时刻不可控**：要求 `[0-2 seconds]` 切，实际切在 **4.0 s**（偏差一倍）。
+→ **能决定切几刀、切成什么，决定不了第几秒切。** 要卡 BGM 鼓点还得后期剪。
+
+✅ 附带确认：硬切后**同场景跨机位的一致性 H3 自己扛得住** —— 跳到远景后
+桥体、齿轮、配色与前一镜完全同源，比拼两段独立生成可靠得多。
+
+## ⚠️ 提示词长度是显存变量（12G 卡专有坑）
+
+余量只有 0.6 GB，**长提示词会直接 OOM**，与分辨率、帧数无关：
+
+```
+Allocation on device 0 would exceed allowed memory. (out of memory)
+Currently allocated : 9.76 GiB
+Requested           : 1.45 GiB
+Device limit        : 11.99 GiB
+```
+
+同一配置下，把提示词压掉一半即跑通。云端 H3 号称能吃 7000 字符，**本地 12G 远达不到**。
+
+推论：**I2V 的风格词该比 T2V 写得短**。首帧已经带着风格，提示词只需把风格「续住」，
+不必像 T2V 那样从零描述全套 —— 省下的长度正好留给时间码分镜。
+
 ## 性能对照
 
 | | LTX-2.3 Q4_K_M | **H3 官方 DiT** |
@@ -242,6 +290,10 @@ KSamplerSelect(res_multistep) ─→ SamplerCustomAdvanced ─→ latent
 - [x] ~~测 `sec_per_shot` 与 `vram_peak_gb`~~
 - [x] ~~I2V 验证~~ —— 官方 DiT 通过，124 帧全程稳定
 - [x] ~~两段式跑批~~ —— **不需要**，实测单段式内存 31.2/31.8 GB
-- [ ] 标定 `motion_style`（探针 B）
+- [x] ~~标定 `motion_style`~~ —— `arc`，转头/推/摇全执行
+- [x] ~~验段内硬切~~ —— 能，但只在「时间码 + 显式禁 fade」写法下触发
+- [x] ~~验跨场景角色一致性~~ —— z-image 出定妆图 + **共享常量层**（角色/场景写成排他句，
+      分镜只引用不复制）。两集 74 镜造型连续。做法见 `../knowledge/dialogue-drama.md` 第一节
+- [x] ~~为 H3 写新骨架~~ —— `../directing/structures/episode-drama.md`（对白剧情片·分集式）
 - [ ] 试 `minimax-h3-velocity-cache-v1` 采样器与 SageAttention 的提速幅度
-- [ ] 为 H3 写新骨架（现有三套的镜数公式在 5.17s 单镜下全部失效）
+- [ ] 标定 `neg_path`（I2V 时负向词到底有没有接上）
