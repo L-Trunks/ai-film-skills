@@ -34,6 +34,16 @@ It also overturned two of our own conclusions — that over-long prompts should 
 and that `audio: BGM throughout` was unbreakable. Both are written up in the
 [gallery](./docs/gallery.md).
 
+> ⚠️ **Where this stops.** We ran two more episodes and then called it: on a 12 GB card
+> this pipeline makes films, not series. At 736×416 and ~7 min per 5-second shot, 68 shots
+> is an overnight run for 1'45" of finished cut — and at 0.31 MP a face in a medium shot is
+> 40–90 px, so 76% of character shots are forced to be close-ups. Episodic drama needs
+> mid-shots to play scenes. Neither limit is a craft problem and **neither goes away by
+> picking a simpler art style** — ours already was one. Everything below still holds on
+> cloud APIs or bigger cards; see
+> [`dialogue-drama.md`](./skills/local-ai-film/knowledge/dialogue-drama.md) for the full
+> write-up.
+
 ### *Nine Tails* — long-shot, chained: 58 segments joined into one film
 
 <img src="./docs/assets/jiuwei.gif" width="400">
