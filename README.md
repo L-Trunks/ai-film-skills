@@ -15,10 +15,12 @@
 
 ## Watch first
 
-Three films, all produced on one **RTX 4070 Ti (12 GB)**. No cloud API in the generation path.
+Four films, all produced on one **RTX 4070 Ti (12 GB)**. No cloud API in the generation path.
 
 The clips below are silent GIFs. **Full versions with sound**:
-▶ [The Jailer](./docs/assets/yuzu.mp4) · [Nine Tails](./docs/assets/jiuwei.mp4) · [Shan Hai](./docs/assets/shanhai.mp4)
+▶ [The Jailer](./docs/assets/yuzu.mp4) · [Mirror — Below the Clock Tower](./docs/assets/jingxiang-zhonglou.mp4) ·
+[Mirror — Rooftop](./docs/assets/jingxiang-tiantai.mp4) · [Nine Tails](./docs/assets/jiuwei.mp4) ·
+[Shan Hai](./docs/assets/shanhai.mp4)
 
 ### *The Jailer* — long-shot, episodic drama with dialogue
 
@@ -43,6 +45,39 @@ and that `audio: BGM throughout` was unbreakable. Both are written up in the
 > cloud APIs or bigger cards; see
 > [`dialogue-drama.md`](./skills/local-ai-film/knowledge/dialogue-drama.md) for the full
 > write-up.
+
+### *Mirror* — when the line above stops working, ship excerpts instead
+
+<img src="./docs/assets/jingxiang-zhonglou.gif" width="400">
+
+▶ **[Below the Clock Tower, 33 seconds, with sound](./docs/assets/jingxiang-zhonglou.mp4)** —
+9 shots, 8 lines, two women in shot/reverse-shot.
+
+<img src="./docs/assets/jingxiang-tiantai.gif" width="400">
+
+▶ **[Rooftop, 14 seconds, with sound](./docs/assets/jingxiang-tiantai.mp4)**
+
+Same card, same H3 setup. **The only thing that changed is the deliverable: from "a film" to
+"a few 30-second passages that hold up."** All 58 segments were still generated (3 h 21 min,
+zero failures) — they just stopped being the product and became the pool to pick from.
+
+Three things this film taught:
+
+- **Excerpts are chosen by shot size, not by plot.** Wide establishing shots and two-hander
+  full shots put faces too small to survive; over-the-shoulder and close-ups hold up.
+  **A 30-second passage can contain zero wide shots** — the information they would have carried
+  is cheaper to put in dialogue and sound than in a mushy establishing frame.
+- **An excerpt is not a slice of the full film's timeline; it is re-edited from scratch.**
+  Shot/reverse-shot that worked across the whole film has half its reverses outside the excerpt,
+  and what's left reads as "one still image moving its mouth."
+- **The first pass was scrapped entirely, and the cause was not the art style — it was having
+  no character reference image.** Pure text-to-image across 47 keyframes is 47 independent
+  draws. The second pass anchored on "hair silhouette + high-saturation iris + one hard marker
+  that cannot drift" and came out with zero costume bleed. See
+  [`chain-consistency.md`](./skills/local-ai-film/knowledge/chain-consistency.md).
+
+⚠️ This film is also where `knowledge/grid-review.md` (the grid method) and `pitfalls.md`
+item ⑲ (intermediate directories serving stale data) came from — we earned both the hard way.
 
 ### *Nine Tails* — long-shot, chained: 58 segments joined into one film
 
@@ -151,6 +186,13 @@ What you get instead is a blank template plus a **five-step calibration** to mea
 - **A simile gets rendered as a literal object.** "A burn scar on his wrist, *about the size of a
   large coin*" — and the wrist gets an actual coin-shaped thing on it. This is harder to catch than
   a stray `never X`, because reading the sentence back, you don't feel like you mentioned a coin.
+- **Intermediate directories silently serve stale data.** The shape is always "A generates B,
+  downstream reads only B" — A gets updated, B never re-runs, nothing reports an error. Our post
+  chain had four of them (voice-over, upscale, lip-sync table, SFX table). The worst: two days of
+  voice work never reached the finished film, **and I greenlit it twice — because I was measuring
+  A while the film was reading B**. Two fixes: an mtime gate as the first statement of every
+  downstream script, and **acceptance evidence must come from the finished artifact itself**;
+  measuring an intermediate directory does not count.
 - **When a composition instruction doesn't execute, it's a weight fight, not a wording problem.**
   Thirty words of instruction get diluted by three hundred words of style anchor and set
   description, and the frame collapses back to the model's default. Two levers work: repeat the
@@ -169,6 +211,30 @@ Films **with dialogue** add a whole second set — `knowledge/dialogue-drama.md`
 layer for characters and sets, a **give-up list** of the six things the model cannot do (so you
 stop burning rerolls on them), one single source of truth for every line of dialogue, and four
 post-production bugs that only appear when several correct timelines are laid on top of each other.
+
+### Signing off shot by shot: the grid method (optional, off by default)
+
+`knowledge/grid-review.md`. On a job that produces dozens of shots, the easiest mistake is
+**substituting "the batch runner didn't error and the files exist" for "is it any good"** — we made
+it three times in one day (final keyframes, candidate keyframes, video segments), and one batch
+that passed every automated check turned out, on human review, to have six shots facing the wrong
+way.
+
+The method: build a grid driven by the shot table itself; a cell counts only once a human has
+looked at the picture and signed it off. **The signature is bound to a hash of the prompt** (edit
+the prompt and the signature expires — without this it degrades back into "does the file exist"
+within two or three rounds), and **nothing goes downstream until every cell is signed** (once
+upscaling / editing / mixing have run, changing one cell costs ten times as much).
+
+> ⛔ **It is off by default, and you have to ask first.** Every sign-off round feeds a contact
+> sheet into the context as an image — dozens of images over one film, so **token usage and context
+> pressure go up noticeably**. It trades money for "every cell has actually been looked at," and
+> that trade is the user's call, not Claude's.
+
+One rule for whoever is doing the signing: **crop and zoom the cell you're unsure about before you
+convict it — never rule on the thumbnail.** We misread thumbnails twice (once mistaking a
+character's back-of-head and bare shoulder for "a thigh"), and both times nearly went off to fix a
+shot list that had nothing wrong with it.
 
 ### Running unattended: turn "I can't tell" into a number
 
@@ -210,6 +276,7 @@ The opening flow:
 6.  Write shots         → prompt-craft.md or shot-list-prompt.md
 7.  Probe              → shot-breakdown
 8.  Batch run          → examples/scripts/
+8.5 Sign off shots     → knowledge/grid-review.md   ⛔ off by default, ask first
 9.  Post               → knowledge/post-production.md
 10. Review             → knowledge/pitfalls.md, item by item
                          unattended? → knowledge/auto-review.md
