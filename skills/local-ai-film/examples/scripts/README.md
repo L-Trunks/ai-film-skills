@@ -49,6 +49,7 @@ ROOT  = r"E:\我的短片"                                  # AIFILM_ROOT
 | `run_films.py` | 跑批主程序（LTX 短单镜路线） |
 | `minimax_h3.py` | H3 长单镜路线的跑批 |
 | `consistency.py` | 可选的人物/环境一致性自动校验 |
+| `grid.py` | 逐镜盖章格子（配套 `knowledge/grid-review.md`）。⛔ **默认不开，用之前先问用户** |
 | `sentinel.py` | 跑批看门狗 |
 | `bgm_fetch.py` / `bgm_pick.py` | 无版权 BGM 抓取与频谱筛选 |
 | `trailer_edit.py` | 预告片剪辑 |
