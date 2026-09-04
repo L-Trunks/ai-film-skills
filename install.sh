@@ -4,7 +4,7 @@
 #   bash install.sh              装到 ~/.claude/skills/（个人级，所有项目可用）
 #   bash install.sh --project    装到 ./.claude/skills/（只对当前项目可用）
 #
-# 重复执行是安全的：同名目录会先备份成 <name>.bak-<时间戳> 再覆盖。
+# 重复执行是安全的：同名目录会先备份到 <skills 的上一级>/skills-backup/<时间戳>/ 再覆盖。
 set -euo pipefail
 
 SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/skills"
@@ -18,14 +18,18 @@ fi
 [ -d "$SRC" ] || { echo "找不到 skills/ 目录，请在仓库根目录执行"; exit 1; }
 mkdir -p "$DST"
 
+# ⛔ 备份目录不能留在 skills/ 里面 —— 它自带 SKILL.md，Claude Code 会把它当成
+#    另一个同名 skill 一起加载，skill 列表里每一项都会出现两遍。
 stamp=$(date +%Y%m%d-%H%M%S)
+BAK="$(dirname "$DST")/skills-backup/$stamp"
 n=0
 for d in "$SRC"/*/; do
   name=$(basename "$d")
   [ -f "$d/SKILL.md" ] || continue
   if [ -e "$DST/$name" ]; then
-    mv "$DST/$name" "$DST/$name.bak-$stamp"
-    echo "  已有同名，备份为 $name.bak-$stamp"
+    mkdir -p "$BAK"
+    mv "$DST/$name" "$BAK/$name"
+    echo "  已有同名，备份到 skills-backup/$stamp/$name"
   fi
   cp -r "$d" "$DST/$name"
   echo "  装好 $name"
